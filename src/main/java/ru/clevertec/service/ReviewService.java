@@ -1,11 +1,13 @@
 package ru.clevertec.service;
 
+import org.hibernate.Session;
 import ru.clevertec.entity.Car;
 import ru.clevertec.entity.Client;
 import ru.clevertec.entity.Review;
 import ru.clevertec.repository.impl.CarRepository;
 import ru.clevertec.repository.impl.ClientRepository;
 import ru.clevertec.repository.impl.ReviewRepository;
+import ru.clevertec.util.HibernateUtil;
 
 import java.util.List;
 
@@ -47,4 +49,5 @@ public class ReviewService {
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
     }
+
 }

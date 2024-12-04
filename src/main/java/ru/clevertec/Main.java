@@ -1,6 +1,7 @@
 package ru.clevertec;
 
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import ru.clevertec.entity.Car;
 import ru.clevertec.entity.CarShowroom;
 import ru.clevertec.entity.Category;
@@ -20,12 +21,11 @@ public class Main {
         CategoryService categoryService = new CategoryService();
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            System.out.println("Hibernate session opened successfully.");
+            Transaction transaction = session.beginTransaction();
 
             CarShowroom showroom = new CarShowroom();
             showroom.setName("Elite Motors");
             showroom.setAddress("123 Main Street");
-
             showroomService.addShowroom(showroom);
 
             Category category = new Category();
@@ -39,18 +39,19 @@ public class Main {
             car.setPrice(30000);
             car.setCategory(category);
             car.setShowroom(showroom);
-
             carService.addCar(car);
-
-            carService.assignCarToShowroom(car.getId(), showroom.getId());
 
             Client client = new Client();
             client.setName("John Doe");
             clientService.addClient(client);
 
             clientService.buyCar(client.getId(), car.getId());
+
+            transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            HibernateUtil.shutdown();
         }
     }
 }

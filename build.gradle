@@ -9,7 +9,6 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
-    // Укажи explicit source/target compatibility
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
 }
@@ -19,22 +18,25 @@ repositories {
 }
 
 dependencies {
-    // Hibernate Core
-    implementation 'org.hibernate:hibernate-core:5.6.15.Final'
+    // Hibernate Core (обновлено до версии 6.x)
+    implementation 'org.hibernate.orm:hibernate-core:6.3.1.Final'
+
 
     // PostgreSQL Driver
     implementation 'org.postgresql:postgresql:42.6.0'
 
-    // SnakeYAML for YAML configuration
+    // SnakeYAML для работы с application.yml
     implementation 'org.yaml:snakeyaml:2.2'
 
-    // Logging dependencies
+    // Logging
     implementation 'org.slf4j:slf4j-api:2.0.7'
-    implementation 'org.slf4j:slf4j-simple:2.0.7'
+    implementation 'ch.qos.logback:logback-classic:1.4.11'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 
     // MapStruct
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
@@ -43,12 +45,6 @@ dependencies {
     // JUnit for testing
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 }
-
-repositories {
-    mavenCentral()
-    maven { url 'https://plugins.gradle.org/m2/' }
-}
-
 
 test {
     useJUnitPlatform()

@@ -10,3 +10,10 @@ datasource:
   url: jdbc:postgresql://localhost:5432/crud_db
   username: postgres
   password: root
+
+hibernate-search:
+  backend:
+    type: lucene
+    directory:
+      type: local-directory
+      root: src/main/resources/indexes
