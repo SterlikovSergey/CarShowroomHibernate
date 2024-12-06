@@ -32,14 +32,7 @@ public class ClientService {
         return clientRepository.findAll();
     }
 
-    public void buyCar(Long clientId, Long carId) {
-        Client client = clientRepository.findById(clientId);
-        Car car = carRepository.findById(carId);
-
-        if (client == null || car == null) {
-            throw new IllegalArgumentException("Client or Car not found");
-        }
-
+    public void buyCar(Client client, Car car) {
         client.getCars().add(car);
         clientRepository.update(client);
     }

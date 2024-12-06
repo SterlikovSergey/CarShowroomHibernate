@@ -1,5 +1,6 @@
 package ru.clevertec.service;
 
+import org.hibernate.Hibernate;
 import ru.clevertec.entity.Category;
 import ru.clevertec.repository.impl.CategoryRepository;
 
@@ -27,5 +28,17 @@ public class CategoryService {
 
     public List<Category> getAllCars() {
         return categoryRepository.findAll();
+    }
+
+    public Category findCategoryWithCars(Long categoryId) {
+        return categoryRepository.findCategoryWithCars(categoryId);
+    }
+
+    public Category findCategoryById(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId);
+        if (category != null) {
+            Hibernate.initialize(category.getCars()); // Явная инициализация коллекции
+        }
+        return category;
     }
 }

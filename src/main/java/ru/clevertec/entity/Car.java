@@ -15,11 +15,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "cars")
 @Data
 @NoArgsConstructor
@@ -47,10 +50,31 @@ public class Car {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "showroom_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "showroom_id", nullable = true)
     private CarShowroom showroom;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    public Car(String model, String brand, int year, double price, Category category, CarShowroom showroom) {
+        this.model = model;
+        this.brand = brand;
+        this.year = year;
+        this.price = price;
+        this.category = category;
+        this.showroom = showroom;
+    }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "id=" + id +
+                ", model='" + model + '\'' +
+                ", brand='" + brand + '\'' +
+                ", year=" + year +
+                ", price=" + price +
+                ", category=" + (category != null ? category.getName() : "null") +
+                '}';
+    }
 }

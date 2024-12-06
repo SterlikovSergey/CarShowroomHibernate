@@ -2,6 +2,8 @@ package ru.clevertec.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +20,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "car_showrooms")
+@NamedEntityGraph(
+        name = "CarShowroom.withCars",
+        attributeNodes = @NamedAttributeNode("cars")
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,5 +42,14 @@ public class CarShowroom {
 
     @OneToMany(mappedBy = "showroom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Car> cars = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "CarShowroom{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }
 

@@ -1,13 +1,11 @@
 package ru.clevertec.service;
 
-import org.hibernate.Session;
 import ru.clevertec.entity.Car;
 import ru.clevertec.entity.Client;
 import ru.clevertec.entity.Review;
 import ru.clevertec.repository.impl.CarRepository;
 import ru.clevertec.repository.impl.ClientRepository;
 import ru.clevertec.repository.impl.ReviewRepository;
-import ru.clevertec.util.HibernateUtil;
 
 import java.util.List;
 
@@ -17,14 +15,7 @@ public class ReviewService {
     private final ClientRepository clientRepository = new ClientRepository();
     private final CarRepository carRepository = new CarRepository();
 
-    public void addReview(Long clientId, Long carId, String text, int rating) {
-        Client client = clientRepository.findById(clientId);
-        Car car = carRepository.findById(carId);
-
-        if (client == null || car == null) {
-            throw new IllegalArgumentException("Client or Car not found");
-        }
-
+    public void addReview(Client client, Car car, String text, int rating) {
         Review review = new Review();
         review.setClient(client);
         review.setCar(car);
@@ -32,6 +23,10 @@ public class ReviewService {
         review.setRating(rating);
 
         reviewRepository.save(review);
+    }
+
+    public List<Review> searchReviews(String keyword) {
+        return reviewRepository.searchReviews(keyword);
     }
 
     public void updateReview(Review review) {
@@ -50,4 +45,7 @@ public class ReviewService {
         return reviewRepository.findAll();
     }
 
+    public List<Review> findReviewsByRating(int rating) {
+        return reviewRepository.findReviewsByRating(rating);
+    }
 }

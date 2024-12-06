@@ -44,9 +44,10 @@ public class CarService {
         carRepository.update(car);
     }
 
-    public List<Car> findCarsByParameters(String brand, Integer year, Long categoryId, Double minPrice, Double maxPrice) {
-        return carRepository.findCarsByParameters(brand, year, categoryId, minPrice, maxPrice);
+    public List<Car> findCarsByFilters(String brand, Integer year, Long categoryId, Double minPrice, Double maxPrice) {
+        return carRepository.findCarsByFilters(brand, year, categoryId, minPrice, maxPrice);
     }
+
 
     public List<Car> findCarsSortedByPrice(boolean ascending) {
         return carRepository.findCarsSortedByPrice(ascending);
@@ -54,5 +55,10 @@ public class CarService {
 
     public List<Car> findCarsWithPagination(int pageNumber, int pageSize) {
         return carRepository.findCarsWithPagination(pageNumber, pageSize);
+    }
+
+    public void assignCarToShowroom(Car car, CarShowroom showroom) {
+        car.setShowroom(showroom);
+        carRepository.update(car);
     }
 }

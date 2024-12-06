@@ -1,5 +1,9 @@
 package ru.clevertec.repository.impl;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import ru.clevertec.entity.CarShowroom;
 import ru.clevertec.repository.IBaseRepository;
@@ -47,6 +51,19 @@ public class CarShowroomRepository implements IBaseRepository<CarShowroom, Long>
     public List<CarShowroom> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("from CarShowroom", CarShowroom.class).list();
+        }
+    }
+    public CarShowroom findShowroomWithCars(Long showroomId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<CarShowroom> query = cb.createQuery(CarShowroom.class);
+            Root<CarShowroom> showroom = query.from(CarShowroom.class);
+
+            // Добавляем JOIN FETCH
+            showroom.fetch("cars", JoinType.LEFT);
+            query.select(showroom).where(cb.equal(showroom.get("id"), showroomId));
+
+            return session.createQuery(query).getSingleResult();
         }
     }
 }

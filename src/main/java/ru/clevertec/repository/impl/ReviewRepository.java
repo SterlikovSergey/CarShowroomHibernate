@@ -49,4 +49,25 @@ public class ReviewRepository implements IBaseRepository<Review, Long> {
             return session.createQuery("from Review", Review.class).list();
         }
     }
+
+    public List<Review> searchReviews(String keyword) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT r FROM Review r " +
+                    "JOIN FETCH r.client " +
+                    "JOIN FETCH r.car " +
+                    "WHERE r.text LIKE :keyword";
+            return session.createQuery(hql, Review.class)
+                    .setParameter("keyword", "%" + keyword + "%")
+                    .getResultList();
+        }
+    }
+
+    public List<Review> findReviewsByRating(int rating) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT r FROM Review r WHERE r.rating = :rating";
+            return session.createQuery(hql, Review.class)
+                    .setParameter("rating", rating)
+                    .getResultList();
+        }
+    }
 }

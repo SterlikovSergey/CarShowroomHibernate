@@ -49,4 +49,13 @@ public class CategoryRepository implements IBaseRepository<Category, Long> {
             return session.createQuery("from Category", Category.class).list();
         }
     }
+
+    public Category findCategoryWithCars(Long categoryId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery(
+                            "SELECT c FROM Category c LEFT JOIN FETCH c.cars WHERE c.id = :id", Category.class)
+                    .setParameter("id", categoryId)
+                    .getSingleResult();
+        }
+    }
 }

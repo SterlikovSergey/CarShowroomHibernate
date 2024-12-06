@@ -4,6 +4,11 @@ hibernate:
   format_sql: true
   hbm2ddl:
     auto: drop-and-create
+    hibernate:
+      cache:
+        use_second_level_cache: true
+        use_query_cache: true
+        region.factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
 
 datasource:
   driver-class-name: org.postgresql.Driver

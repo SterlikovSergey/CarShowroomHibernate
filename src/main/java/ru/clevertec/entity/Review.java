@@ -39,5 +39,16 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "car_id", nullable = false)
     private Car car;
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", rating=" + rating +
+                ", client=" + (client != null ? client.getName() : "null") +
+                ", car=" + (car != null ? car.getModel() : "null") +
+                '}';
+    }
 }
 

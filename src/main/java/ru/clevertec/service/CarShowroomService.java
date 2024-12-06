@@ -28,4 +28,8 @@ public class CarShowroomService {
     public List<CarShowroom> getAllShowrooms() {
         return carShowroomRepository.findAll();
     }
+
+    public CarShowroom getShowroomWithCars(Long showroomId) {
+        return carShowroomRepository.findShowroomWithCars(showroomId);
+    }
 }
