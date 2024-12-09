@@ -1,5 +1,6 @@
 package ru.clevertec;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import ru.clevertec.entity.Car;
@@ -30,30 +31,62 @@ public class Main {
 
             // === CRUD для всех сущностей ===
             // Создание автосалонов
-            CarShowroom showroom1 = new CarShowroom();
-            showroom1.setName("Elite Motors");
-            showroom1.setAddress("123 Main Street");
+            CarShowroom showroom1 = CarShowroom.builder()
+                    .name("Elite Motors")
+                    .address("123 Main Street")
+                    .build();
             showroomService.addShowroom(showroom1);
 
-            CarShowroom showroom2 = new CarShowroom();
-            showroom2.setName("Luxury Cars");
-            showroom2.setAddress("456 Elm Street");
+            CarShowroom showroom2 = CarShowroom.builder()
+                    .name("Luxury Cars")
+                    .address("456 Elm Street")
+                    .build();
             showroomService.addShowroom(showroom2);
 
             // Создание категорий
-            Category categorySedan = new Category();
-            categorySedan.setName("Sedan");
+            Category categorySedan = Category.builder()
+                    .name("Sedan")
+                    .build();
             categoryService.addCategory(categorySedan);
 
-            Category categorySUV = new Category();
-            categorySUV.setName("SUV");
+            Category categorySUV = Category.builder()
+                    .name("SUV")
+                    .build();
             categoryService.addCategory(categorySUV);
 
             // Добавление автомобилей
-            Car car1 = new Car("Camry", "Toyota", 2022, 30000.0, categorySedan, showroom1);
-            Car car2 = new Car("Accord", "Honda", 2021, 28000.0, categorySedan, showroom1);
-            Car car3 = new Car("RAV4", "Toyota", 2023, 35000.0, categorySUV, showroom2);
-            Car car4 = new Car("CR-V", "Honda", 2022, 34000.0, categorySUV, showroom2);
+            Car car1 = Car.builder()
+                    .model("Camry")
+                    .brand("Toyota")
+                    .year(2022)
+                    .price(30000.0)
+                    .category(categorySedan)
+                    .showroom(showroom1)
+                    .build();
+            Car car2 = Car.builder()
+                    .model("Accord")
+                    .brand("Honda")
+                    .year(2021)
+                    .price(28000.0)
+                    .category(categorySedan)
+                    .showroom(showroom1)
+                    .build();
+            Car car3 = Car.builder()
+                    .model("RAV4")
+                    .brand("Toyota")
+                    .year(2023)
+                    .price(35000.0)
+                    .category(categorySUV)
+                    .showroom(showroom2)
+                    .build();
+            Car car4 = Car.builder()
+                    .model("CR-V")
+                    .brand("Honda")
+                    .year(2022)
+                    .price(34000.0)
+                    .category(categorySUV)
+                    .showroom(showroom2)
+                    .build();
 
             carService.addCar(car1);
             carService.addCar(car2);
@@ -68,23 +101,30 @@ public class Main {
             carService.deleteCar(car2);
 
             // === Привязка автомобиля к автосалону ===
-            Car car5 = new Car("Civic", "Honda", 2024, 29000.0, categorySedan, null);
+            Car car5 = Car.builder()
+                    .model("Civic")
+                    .brand("Honda")
+                    .year(2024)
+                    .price(29000.0)
+                    .category(categorySedan)
+                    .showroom(showroom2)
+                    .build();
             carService.addCar(car5);
-            carService.assignCarToShowroom(car5, showroom2);
 
             // === Регистрация клиентов ===
-            Client client1 = new Client();
-            client1.setName("Alice Johnson");
-            client1.setRegistrationDate(LocalDate.now());
-            clientService.addClient(client1);
-
-            Client client2 = new Client();
-            client2.setName("Bob Smith");
-            client2.setRegistrationDate(LocalDate.now());
-            clientService.addClient(client2);
-
             // === Привязка автомобиля к клиенту ===
+            Client client1 = Client.builder()
+                    .name("Alice Johnson")
+                    .registrationDate(LocalDate.now())
+                    .build();
+            clientService.addClient(client1);
             clientService.buyCar(client1, car1);
+
+            Client client2 = Client.builder()
+                    .name("Bob Smith")
+                    .registrationDate(LocalDate.now())
+                    .build();
+            clientService.addClient(client2);
             clientService.buyCar(client2, car3);
 
             // === Добавление отзывов ===
@@ -108,10 +148,13 @@ public class Main {
             paginatedCars.forEach(System.out::println);
 
             // === Полнотекстовый поиск отзывов ===
-            // По ключевым словам
-            System.out.println("\n=== Поиск отзывов с ключевым словом 'performance' ===");
-            List<Review> reviewsByKeyword = reviewService.searchReviews("performance");
-            reviewsByKeyword.forEach(System.out::println);
+            System.out.println("\n=== Поиск отзывов с ключевым словом 'SUV' ===");
+            List<Review> suvReviews = reviewService.searchReviews("SUV");
+            suvReviews.forEach(review -> {
+                Hibernate.initialize(review.getClient());
+                Hibernate.initialize(review.getCar());
+            });
+            suvReviews.forEach(System.out::println);
 
             // Поиск отзывов по рейтингу
             System.out.println("\n=== Поиск отзывов с рейтингом 5 ===");
